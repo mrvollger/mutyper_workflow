@@ -157,22 +157,3 @@ p.fold <- fold_change.df %>%
     theme(legend.position = "top")
 scale <- 1
 ggsave(out_fold, height = 12 * scale, width = 24 * scale, plot = p.fold)
-
-
-
-
-mutate(
-    mat = list(matrix(
-        c(count_SD, catagory_count_SD - count_SD, count_Unique, catagory_count_Unique - count_Unique),
-        ncol = 2, nrow = 2
-    )),
-) %>%
-    ungroup() %>%
-    mutate(
-        pval.corrected = pval * n()
-    ) %>%
-    data.table()
-pval.df[pval.corrected < 0.05]
-
-pval.df$mat[[1]]
-fisher.test(pval.df$mat[[1]])
