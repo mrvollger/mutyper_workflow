@@ -11,8 +11,8 @@ library(ggforce)
 library(glue)
 # library(tidylog)
 
-spectra_f_1 <- "results/spectra/stratify/SD_spectra.txt"
-spectra_f_2 <- "results/spectra/stratify/Unique_spectra.txt"
+spectra_f_1 <- "https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/SD_spectra.txt"
+spectra_f_2 <- "https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/Unique_spectra.txt"
 spectra_f_1 <- snakemake@input[[1]]
 spectra_f_2 <- snakemake@input[[2]]
 
@@ -42,7 +42,10 @@ make_spectra_long <- function(spectra) {
             names_to = "spectra",
             values_to = "count"
         ) %>%
+        mutate(first_base = substr(spectra, 1, 1)) %>%
+        mutate(midbase = substr(spectra, 2, 2)) %>%
         mutate(first_two_bases = substr(spectra, 1, 2)) %>%
+        mutate(first_three_bases = substr(spectra, 1, 3)) %>%
         data.table()
 }
 
@@ -70,23 +73,23 @@ spec <- bind_rows(l, .id = "stratify") %>%
     mutate(percent = 100 * count / sum(count)) %>%
     data.table()
 
-pdf(out_plot, height = 11, width = 8)
-for (two in unique(spec$first_two_bases)) {
+pdf(out_plot, height = 8, width = 16)
+for (bases in unique(spec$first_base)) {
     p <- spec %>%
-        filter(first_two_bases == two) %>%
+        filter(first_base == bases) %>%
         ggplot(
             aes(
                 x = spectra,
                 y = percent,
-                color = spectra,
+                color = stratify,
             )
         ) +
+        geom_jitter(alpha = 0.3, width = 0.25) +
         geom_violin() +
-        geom_jitter() +
-        scale_x_discrete(guide = guide_axis(n.dodge = 6)) +
+        scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
         cowplot::theme_minimal_vgrid() +
-        facet_grid(~stratify) +
-        theme(legend.position = "none")
+        # facet_grid(~stratify) +
+        theme(legend.position = "top")
     print(p)
 }
 dev.off()
