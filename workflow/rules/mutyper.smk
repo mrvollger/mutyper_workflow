@@ -213,6 +213,30 @@ rule mutyper_spectra_stratify:
         """
 
 
+rule mutyper_spectra_targets:
+    input:
+        fasta=expand("results/ancestral-fasta/{chrm}.fa", chrm=CHRS),
+        bed=lambda wc: config["stratify"][wc.rgn],
+    output:
+        targets="results/spectra/stratify/{rgn}_targets.txt",
+        fasta="temp/spectra/stratify/{rgn}_targets.fa",
+        fai="temp/spectra/stratify/{rgn}_targets.fa.fai",
+    log:
+        "logs/targets.{rgn}.log",
+    conda:
+        "../envs/env.yml"
+    shell:
+        """
+        cat {input.fasta} > {output.fasta}
+        samtools faidx {output.fasta}
+
+        mutyper targets \
+            --bed {input.bed} \
+            {output.fasta} \
+            > {output.targets}
+        """
+
+
 rule mutyper:
     input:
         rules.mutyper_vcf.output,
