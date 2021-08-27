@@ -70,7 +70,7 @@ rule all:
         rules.mutyper_vcf.output,
         rules.mutyper_spectra.output,
         rules.plot_spectra.output,
-        rules(rules.mutyper_spectra_targets.output, rgn=RGNS),
+        expand(rules.mutyper_spectra_targets.output, rgn=RGNS),
         expand(rules.mutyper_spectra_stratify.output, rgn=RGNS),
         expand(rules.plot_spectra_stratify.output, rgn=RGNS),
         make_plot_comparison_outputs,
