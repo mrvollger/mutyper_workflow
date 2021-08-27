@@ -9,6 +9,7 @@ library(data.table)
 library(tidyverse)
 library(ggforce)
 library(glue)
+# library(tidylog)
 
 spectra_f_1 <- "results/spectra/stratify/SD_spectra.txt"
 spectra_f_2 <- "results/spectra/stratify/Unique_spectra.txt"
@@ -114,21 +115,64 @@ fold_change.df <- spec %>%
     data.table()
 
 
+pval.df <- spec %>%
+    mutate(
+        spectra = factor(spectra, levels = levels(fold_change.df$spectra))
+    ) %>%
+    group_by(stratify, spectra) %>%
+    summarise(count = sum(count)) %>%
+    group_by(stratify) %>%
+    mutate(catagory_count = sum(count)) %>%
+    group_by(spectra) %>%
+    pivot_wider(
+        id_cols = spectra,
+        names_from = stratify,
+        values_from = c("catagory_count", "count")
+    ) %>%
+    drop_na() %>%
+    rowwise() %>%
+    mutate(
+        mat = list(matrix(as.numeric(cur_data()[1:4]), nrow = 2)),
+        pval = fisher.test(mat)$p.value,
+    ) %>%
+    ungroup() %>%
+    mutate(
+        pval.corrected = pval * n()
+    ) %>%
+    data.table()
+
 p.fold <- fold_change.df %>%
+    merge(pval.df, by = "spectra") %>%
     ggplot(
         aes(
             x = spectra,
             y = log_change,
-            color = log_change > 0,
-            fill = log_change > 0
+            fill = pval.corrected < 0.05,
         )
     ) +
     ylab(glue("log2({name1}/{name2})")) +
-    # scale_y_continuous(trans = "log10") +
-    # annotation_logticks(sides = "l") +
     geom_bar(stat = "identity") +
     scale_x_discrete(guide = guide_axis(n.dodge = 6)) +
     cowplot::theme_minimal_grid() +
-    theme(legend.position = "none")
+    theme(legend.position = "top")
 scale <- 1
 ggsave(out_fold, height = 12 * scale, width = 24 * scale, plot = p.fold)
+
+
+
+
+mutate(
+    mat = list(matrix(
+        c(count_SD, catagory_count_SD - count_SD, count_Unique, catagory_count_Unique - count_Unique),
+        ncol = 2, nrow = 2
+    )),
+) %>%
+    ungroup() %>%
+    mutate(
+        pval.corrected = pval * n()
+    ) %>%
+    data.table()
+pval.df[pval.corrected < 0.05]
+
+pval.df$mat[[1]]
+fisher.test(pval.df$mat[[1]])
