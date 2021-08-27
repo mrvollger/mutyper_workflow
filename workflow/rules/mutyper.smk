@@ -215,6 +215,7 @@ rule mutyper_spectra_stratify:
 
 rule mutyper_spectra_targets:
     input:
+        genome=FAI,
         fasta=expand("results/ancestral-fasta/{chrm}.fa", chrm=CHRS),
         bed=lambda wc: config["stratify"][wc.rgn],
     output:
@@ -227,11 +228,14 @@ rule mutyper_spectra_targets:
         "../envs/env.yml"
     shell:
         """
-        cat {input.fasta} > {output.fasta}
+
+        cat {input.fasta} \
+            bedtools maskfasta -fi - \
+             -bed <(bedtools complement -g {input.genome} -i {input.bed} ) \
+        > {output.fasta}
         samtools faidx {output.fasta}
 
         mutyper targets \
-            --bed {input.bed} \
             {output.fasta} \
             > {output.targets}
         """
