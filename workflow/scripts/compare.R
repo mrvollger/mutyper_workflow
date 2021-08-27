@@ -104,7 +104,9 @@ fold_change.df <- spec %>%
         values_from = "percent"
     ) %>%
     mutate(
-        log_change = (!!as.name(name1)) / (!!as.name(name2))
+        log_change = log2(
+            (!!as.name(name1)) / (!!as.name(name2))
+        )
     ) %>%
     drop_na() %>%
     arrange(log_change) %>%
