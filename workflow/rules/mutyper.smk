@@ -231,7 +231,8 @@ rule mutyper_spectra_targets:
 
         cat {input.fasta} \
             | bedtools maskfasta -fi - \
-                -bed <(bedtools complement -g {input.genome} -i {input.bed} ) \
+                -bed <(bedtools complement -g {input.genome} -i {input.bed} \
+                    | bedtools sort -g {input.genome} -i - ) \
             > {output.fasta}
 
         samtools faidx {output.fasta}
