@@ -124,7 +124,7 @@ p.fold <- fold_change.df %>%
     annotation_logticks("l") +
     geom_bar(stat = "identity") +
     scale_x_discrete(guide = guide_axis(n.dodge = 6)) +
-    cowplot::theme_minimal_vgrid() +
+    cowplot::theme_minimal_grid() +
     theme(legend.position = "none")
 scale <- 1
 ggsave(out_fold, height = 12 * scale, width = 24 * scale, plot = p.fold)
