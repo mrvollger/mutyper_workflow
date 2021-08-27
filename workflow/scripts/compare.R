@@ -121,7 +121,7 @@ p.fold <- fold_change.df %>%
     ) +
     ylab(glue("log2({name1}/{name2})")) +
     scale_y_continuous(trans = "log10") +
-    annotation_logticks("l") +
+    annotation_logticks(sides = "l") +
     geom_bar(stat = "identity") +
     scale_x_discrete(guide = guide_axis(n.dodge = 6)) +
     cowplot::theme_minimal_grid() +
