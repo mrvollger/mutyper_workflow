@@ -9,6 +9,7 @@ library(data.table)
 library(tidyverse)
 
 spectra_f <- "https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/spectra.txt"
+pop <- fread("https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/hprc_year1_sample_metadata.txt", fill = TRUE)
 spectra_f <- snakemake@input$full
 
 heatmap_f <- "results/plots/spectra/heatmap.pdf"
@@ -46,6 +47,10 @@ read_spectra <- function(f) {
     spectra$PC1 <- pca_res$x[, 1]
     spectra$PC2 <- pca_res$x[, 2]
 
+    spectra <- spectra %>%
+        merge(pop, by.x = "sample", by.y = "Sample", all.x = T) %>%
+        data.table()
+
     list(
         df = spectra,
         long = make_spectra_long(spectra),
@@ -61,7 +66,7 @@ dev.off()
 
 pdf(pca_f, height = 12, width = 12)
 autoplot(spectra$pca, data = spectra$df) +
-    geom_text_repel(aes(label = sample)) +
+    geom_text_repel(aes(label = sample, color = Superpopulation)) +
     theme_cowplot() +
     theme(legend.position = "top")
 dev.off()
