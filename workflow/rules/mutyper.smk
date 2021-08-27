@@ -219,8 +219,8 @@ rule mutyper_spectra_targets:
         bed=lambda wc: config["stratify"][wc.rgn],
     output:
         targets="results/spectra/stratify/{rgn}_targets.txt",
-        fasta="temp/spectra/stratify/{rgn}_targets.fa",
-        fai="temp/spectra/stratify/{rgn}_targets.fa.fai",
+        fasta=temp("temp/spectra/stratify/fasta/{rgn}_targets.fa"),
+        fai=temp("temp/spectra/stratify/fasta/{rgn}_targets.fa.fai"),
     log:
         "logs/targets.{rgn}.log",
     conda:
