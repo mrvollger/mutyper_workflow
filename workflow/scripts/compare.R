@@ -104,7 +104,7 @@ fold_change.df <- spec %>%
         values_from = "percent"
     ) %>%
     mutate(
-        log_change = log2((!!as.name(name1)) / (!!as.name(name2)))
+        log_change = (!!as.name(name1)) / (!!as.name(name2))
     ) %>%
     drop_na() %>%
     data.table()
@@ -120,6 +120,8 @@ p.fold <- fold_change.df %>%
         )
     ) +
     ylab(glue("log2({name1}/{name2})")) +
+    scale_y_continuous(trans = "log2") +
+    annotation_logticks("l") +
     geom_bar(stat = "identity") +
     scale_x_discrete(guide = guide_axis(n.dodge = 6)) +
     cowplot::theme_minimal_vgrid() +
