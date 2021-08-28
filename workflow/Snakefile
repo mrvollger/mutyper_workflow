@@ -74,4 +74,4 @@ rule all:
         expand(rules.mutyper_spectra_stratify.output, rgn=RGNS),
         expand(rules.plot_spectra_stratify.output, rgn=RGNS),
         make_plot_comparison_outputs,
-        rules.mutyper_spectra_correction.output,
+        expand(rules.mutyper_spectra_correction.output, rgn=RGNS),
