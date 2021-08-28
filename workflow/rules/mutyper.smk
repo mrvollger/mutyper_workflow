@@ -243,7 +243,7 @@ rule mutyper_spectra_correction:
         targets=rules.mutyper_spectra_targets.output.targets,
         spectra=rules.mutyper_spectra_stratify.output.spectra,
     output:
-        targets="results/spectra/stratify/spectra_corrected_{rgn}.txt",
+        spectra="results/spectra/stratify/spectra_corrected_{rgn}.txt",
     log:
         "logs/spectra/correct.{rgn}.log",
     conda:
