@@ -228,7 +228,7 @@ rule mutyper_spectra_targets:
     shell:
         """
         cat {input.fasta} \
-            | seqtk seq -M {input.bed} -c -n N \
+            | seqtk seq -M {input.bed} -c \
             > {output.fasta}
         samtools faidx {output.fasta}
 
@@ -236,6 +236,20 @@ rule mutyper_spectra_targets:
             {output.fasta} \
             > {output.targets}
         """
+
+
+rule mutyper_spectra_correction:
+    input:
+        targets=rules.mutyper_spectra_targets.output.targets,
+        spectra=rules.mutyper_spectra_stratify,
+    output:
+        targets="results/spectra/stratify/spectra_corrected_{rgn}.txt",
+    log:
+        "logs/spectra/correct.{rgn}.log",
+    conda:
+        "../envs/R.yml"
+    script:
+        "../scripts/correct.R"
 
 
 rule mutyper:
