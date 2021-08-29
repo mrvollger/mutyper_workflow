@@ -238,6 +238,23 @@ rule mutyper_spectra_targets:
         """
 
 
+rule mutyper_spectra_ksfs:
+    input:
+        bcf=rules.mutyper_vcf.output.bcf,
+    output:
+        ksfs="results/spectra/stratify/{rgn}_ksfs.txt",
+    log:
+        "logs/ksfs/{rgn}.log",
+    conda:
+        "../envs/env.yml"
+    shell:
+        """
+        mutyper ksfs \
+            {input.bcf} \
+            > {output.ksfs}
+        """
+
+
 rule mutyper_spectra_correction:
     input:
         targets=rules.mutyper_spectra_targets.output.targets,
