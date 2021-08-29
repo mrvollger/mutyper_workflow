@@ -11,10 +11,18 @@ library(ggforce)
 library(glue)
 # library(tidylog)
 
+pop <- fread("https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/hprc_year1_sample_metadata.txt", fill = TRUE)
 spectra_f_1 <- "https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/SD_spectra.txt"
+target_f_1 <- "https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/SD_targets.txt"
 spectra_f_2 <- "https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/Unique_spectra.txt"
+target_f_2 <- "https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/Unique_targets.txt"
 spectra_f_1 <- snakemake@input[[1]]
 spectra_f_2 <- snakemake@input[[2]]
+target_f_1 <- snakemake@input[[3]]
+target_f_2 <- snakemake@input[[4]]
+
+
+
 
 name1 <- "SD"
 name2 <- "Unique"
@@ -23,10 +31,22 @@ name2 <- snakemake@wildcards$name2
 
 out_plot <- "~/Desktop/1_2.pdf"
 out_fold <- "~/Desktop/log_fold.pdf"
+out_targets <- "~/Desktop/targets_fold.pdf"
+out_pca <- "~/Desktop/pca.pdf"
+
 out_fold <- snakemake@output$fold
 out_plot <- snakemake@output$plot
+out_targets <- snakemake@output$targets
+out_pca <- snakemake@output$pca
 
 
+read_targets <- function(f, tag) {
+    fread(f, col.names = c("spectra", "count")) %>%
+        mutate(
+            freq = count / sum(count),
+            id = tag
+        )
+}
 
 make_spectra_matrix <- function(spectra) {
     spec.m <- as.matrix(spectra[, -1])
@@ -64,6 +84,17 @@ read_spectra <- function(f) {
         m = spectra.m
     )
 }
+
+
+t1 <- read_targets(target_f_1, name1)
+t2 <- read_targets(target_f_2, name2)
+ts <- list(t1, t2)
+names(ts) <- c(name1, name2)
+targets <- bind_cols(ts) %>%
+    data.table()
+targets$fold_change <- targets[, 3] / targets[, 7]
+targets$spectra <- targets[, 1]
+
 spec1 <- read_spectra(spectra_f_1)
 spec2 <- read_spectra(spectra_f_2)
 l <- list(spec1$long, spec2$long)
@@ -162,3 +193,58 @@ p.fold <- fold_change.df %>%
     theme(legend.position = "top")
 scale <- 1
 ggsave(out_fold, height = 12 * scale, width = 24 * scale, plot = p.fold)
+
+
+
+
+
+targets.p <- targets %>%
+    ggplot(
+        aes(
+            x = spectra,
+            y = fold_change,
+            fill = fold_change > 1
+        )
+    ) +
+    ylab(glue("{name1}/{name2}")) +
+    geom_bar(stat = "identity") +
+    # scale_y_continuous(trans = "log2") +
+    # annotation_logticks(base = 2, sides = "l") +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+    cowplot::theme_minimal_grid() +
+    theme(legend.position = "top")
+ggsave(out_targets, height = 12 * scale, width = 12 * scale, plot = targets.p)
+
+
+
+
+
+#
+#
+# compare PCA
+#
+#
+row.names(spec1$m) <- paste(row.names(spec1$m), name1, sep = "_")
+row.names(spec2$m) <- paste(row.names(spec2$m), name2, sep = "_")
+print(dim(spec1$m))
+print(dim(spec2$m))
+shared <- intersect(colnames(spec1$m), colnames(spec2$m))
+spec_matrix <- rbind(spec1$m[, shared], spec2$m[, shared], fill = TRUE)
+pca_res <- prcomp(spec_matrix, center = TRUE, scale. = TRUE)
+
+
+spec_df <- data.table(spec_matrix) %>%
+    mutate(sample = row.names(spec_matrix)) %>%
+    separate(sample, sep = "_", into = c("Sample", "stratify"), remove = FALSE) %>%
+    merge(pop, by = "Sample", all.x = T) %>%
+    data.table()
+spec_df$PC1 <- pca_res$x[, 1]
+spec_df$PC2 <- pca_res$x[, 2]
+
+pdf(out_pca, height = 12, width = 12)
+autoplot(pca_res, data = spec_df, size = 0.001) +
+    geom_point(aes(x = PC1, y = PC2, shape = stratify, color = Superpopulation)) +
+    # geom_text_repel(aes(label = sample, color = Superpopulation)) +
+    theme_cowplot() +
+    theme(legend.position = "top")
+dev.off()
