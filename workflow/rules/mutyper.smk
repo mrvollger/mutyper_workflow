@@ -241,6 +241,7 @@ rule mutyper_spectra_targets:
 rule mutyper_spectra_ksfs:
     input:
         bcf=rules.mutyper_vcf.output.bcf,
+        bed=lambda wc: config["stratify"][wc.rgn],
     output:
         ksfs="results/spectra/stratify/{rgn}_ksfs.txt",
     log:
@@ -249,9 +250,9 @@ rule mutyper_spectra_ksfs:
         "../envs/env.yml"
     shell:
         """
-        mutyper ksfs \
-            {input.bcf} \
-            > {output.ksfs}
+        bcftools view --regions-file {input.bed} {input.bcf} \
+            | mutyper ksfs -  \
+        > {output.ksfs}
         """
 
 
