@@ -43,7 +43,7 @@ rule plot_comparison:
         lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name2),
     output:
         plot="results/plots/stratify/compare/{name1}_{name2}/spectra.pdf",
-        fold="results/plots/stratify/compare/{name1}_{name2}/logfold.pdf",
+        fold="results/plots/stratify/compare/{name1}_{name2}/log_fold.pdf",
         targets="results/plots/stratify/compare/{name1}_{name2}/targets.pdf",
         pca="results/plots/stratify/compare/{name1}_{name2}/pca.pdf",
     log:
@@ -66,7 +66,7 @@ rule plot_comparison_corrected:
         lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name2),
     output:
         plot="results/plots/stratify/compare_corrected/{name1}_{name2}/spectra.pdf",
-        fold="results/plots/stratify/compare_corrected/{name1}_{name2}/logfold.pdf",
+        fold="results/plots/stratify/compare_corrected/{name1}_{name2}/log_fold.pdf",
         targets="results/plots/stratify/compare_corrected/{name1}_{name2}/targets.pdf",
         pca="results/plots/stratify/compare_corrected/{name1}_{name2}/pca.pdf",
     log:
