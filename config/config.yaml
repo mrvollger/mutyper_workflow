@@ -3,11 +3,8 @@ vcf: config/inputs/snv_alt.bcf
 reference: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/SEDEF/chm13_v1.1_plus38Y_masked.fasta
 outgroup: /net/eichler/vol28/projects/long_read_archive/nobackups/nhp/Clint_PTR/assemblies/hifiasm/0.15.2/Clint_PTR.hifiasm.bp.hap1.p_ctg.fasta
 stratify:
-  Sat: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/SEDEF/chm13_v1.1_plus38Y.cen.bed
-  SD: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/SEDEF/chm13_v1.1_plus38Y.SDs.bed
+  SD: config/annotations/SD.bed
+  InterSD: config/annotations/SD_inter.bed
+  IntraSD: config/annotations/SD_intra.bed
+  InterAndIntraSD: config/annotations/SD_both_intra_and_inter.bed
   Unique: config/annotations/unique.bed
-  Exons: config/annotations/cds.bed
-  InterGenicSD: config/annotations/intergenic_sd.bed
-  InterGenicUnique: config/annotations/intergenic_unique.bed
-  TRF: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/Masked/chm13_v1.1_plus38Y_trf.bed
-  RM: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/Masked/chm13_v1.1_plus38Y_repeatmasker.out.bed
