@@ -39,9 +39,13 @@ rule plot_comparison:
     input:
         lambda wc: (rules.mutyper_spectra_stratify.output.spectra).format(rgn=wc.name1),
         lambda wc: (rules.mutyper_spectra_stratify.output.spectra).format(rgn=wc.name2),
+        lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name1),
+        lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name2),
     output:
-        plot="results/plots/spectra/stratify/compare/all/{name1}_{name2}.pdf",
-        fold="results/plots/spectra/stratify/compare/logfold/{name1}_{name2}.pdf",
+        plot="results/plots/stratify/compare/{name1}_{name2}/spectra.pdf",
+        fold="results/plots/stratify/compare/{name1}_{name2}/logfold.pdf",
+        targets="results/plots/stratify/compare/{name1}_{name2}/targets.pdf",
+        pca="results/plots/stratify/compare/{name1}_{name2}/pca.pdf",
     log:
         "logs/plots/compare/{name1}_{name2}.log",
     conda:
@@ -61,10 +65,10 @@ rule plot_comparison_corrected:
         lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name1),
         lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name2),
     output:
-        plot=(
-            "results/plots/spectra/stratify/compare_corrected/all/{name1}_{name2}.pdf"
-        ),
-        fold="results/plots/spectra/stratify/compare_corrected/logfold/{name1}_{name2}.pdf",
+        plot="results/plots/stratify/compare_corrected/{name1}_{name2}/spectra.pdf",
+        fold="results/plots/stratify/compare_corrected/{name1}_{name2}/logfold.pdf",
+        targets="results/plots/stratify/compare_corrected/{name1}_{name2}/targets.pdf",
+        pca="results/plots/stratify/compare_corrected/{name1}_{name2}/pca.pdf",
     log:
         "logs/plots/compare_corrected/{name1}_{name2}.log",
     conda:
