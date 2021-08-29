@@ -58,6 +58,8 @@ rule plot_comparison_corrected:
         lambda wc: (rules.mutyper_spectra_correction.output.spectra).format(
             rgn=wc.name2
         ),
+        lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name1),
+        lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name2),
     output:
         plot=(
             "results/plots/spectra/stratify/compare_corrected/all/{name1}_{name2}.pdf"
