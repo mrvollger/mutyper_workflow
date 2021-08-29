@@ -9,9 +9,9 @@ rule plot_spectra:
         stratify=expand(rules.mutyper_spectra_stratify.output.spectra, rgn=RGNS),
         full=rules.mutyper_spectra.output.spectra,
     output:
-        violin="results/plots/spectra/violin.pdf",
-        heatmap="results/plots/spectra/heatmap.pdf",
-        pca="results/plots/spectra/pca.pdf",
+        violin="results/plots/violin.pdf",
+        heatmap="results/plots/heatmap.pdf",
+        pca="results/plots/pca.pdf",
     log:
         "logs/plots/spectra.log",
     conda:
@@ -24,9 +24,9 @@ rule plot_spectra_stratify:
     input:
         full=rules.mutyper_spectra_stratify.output.spectra,
     output:
-        violin="results/plots/spectra/stratify/{rgn}/violin.pdf",
-        heatmap="results/plots/spectra/stratify/{rgn}/heatmap.pdf",
-        pca="results/plots/spectra/stratify/{rgn}/pca.pdf",
+        violin="results/plots/stratify/{rgn}/violin.pdf",
+        heatmap="results/plots/stratify/{rgn}/heatmap.pdf",
+        pca="results/plots/stratify/{rgn}/pca.pdf",
     log:
         "logs/plots/spectra_{rgn}.log",
     conda:

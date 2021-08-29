@@ -226,7 +226,10 @@ ggsave(out_targets, height = 12 * scale, width = 12 * scale, plot = targets.p)
 #
 row.names(spec1$m) <- paste(row.names(spec1$m), name1, sep = "_")
 row.names(spec2$m) <- paste(row.names(spec2$m), name2, sep = "_")
-spec_matrix <- rbind(spec1$m, spec2$m)
+print(dim(spec1$m))
+print(dim(spec2$m))
+shared <- intersect(colnames(spec1$m), colnames(spec2$m))
+spec_matrix <- rbind(spec1$m[, shared], spec2$m[, shared], fill = TRUE)
 pca_res <- prcomp(spec_matrix, center = TRUE, scale. = TRUE)
 
 
@@ -238,10 +241,10 @@ spec_df <- data.table(spec_matrix) %>%
 spec_df$PC1 <- pca_res$x[, 1]
 spec_df$PC2 <- pca_res$x[, 2]
 
-pdf(pca_f, height = 12, width = 12)
-autoplot(pca_res, data = spec_df, size = 0.1) +
+pdf(out_pca, height = 12, width = 12)
+autoplot(pca_res, data = spec_df, size = 0.001) +
     geom_point(aes(x = PC1, y = PC2, shape = stratify, color = Superpopulation)) +
-    geom_text_repel(aes(label = sample, color = Superpopulation)) +
+    # geom_text_repel(aes(label = sample, color = Superpopulation)) +
     theme_cowplot() +
     theme(legend.position = "top")
 dev.off()
