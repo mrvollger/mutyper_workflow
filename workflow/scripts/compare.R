@@ -264,7 +264,8 @@ legend(
 dev.off()
 
 pdf(out_heatmap2, height = 8, width = 8)
-heatmap((spec1$m / sum(spec1$m)) / (spec2$m / sum(spec2$m)),
+heatmap(
+    (spec1$m / sum(spec1$m)) / (spec2$m / sum(spec2$m)),
     col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
 )
 legend(
@@ -272,3 +273,30 @@ legend(
     fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
 )
 dev.off()
+
+strReverse <- function(x) {
+    sapply(lapply(strsplit(x, NULL), rev), paste, collapse = "")
+}
+strReverse()
+strReverse(as.character(spec1$long$spectra))
+
+heatmap.df <- fold_change.df %>%
+    separate(spectra, ">", into = c("ancestral", "right")) %>%
+    mutate(
+        derived = substr(right, 2, 2),
+        abs_change = (!!as.name(name1)) - (!!as.name(name2)),
+    )
+
+p <- ggplot(heatmap.df, aes(y = ancestral, x = derived)) +
+    theme_cowplot() +
+    geom_tile(aes(fill = log_fold)) +
+    facet_row(~name, scales = "free") +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+    scale_fill_distiller(palette = "Spectral")
+
+p2 <- ggplot(heatmap.df, aes(y = ancestral, x = derived)) +
+    theme_cowplot() +
+    geom_tile(aes(fill = log_fold)) +
+    facet_row(~name, scales = "free") +
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+    scale_fill_distiller(palette = "Spectral")
