@@ -119,3 +119,4 @@ _build
 results/**
 .snakemake/**
 .vscode/**
+temp/**
