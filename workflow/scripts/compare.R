@@ -274,29 +274,24 @@ legend(
 )
 dev.off()
 
-strReverse <- function(x) {
-    sapply(lapply(strsplit(x, NULL), rev), paste, collapse = "")
-}
-strReverse()
-strReverse(as.character(spec1$long$spectra))
 
 heatmap.df <- fold_change.df %>%
     separate(spectra, ">", into = c("ancestral", "right")) %>%
     mutate(
         derived = substr(right, 2, 2),
-        abs_change = (!!as.name(name1)) - (!!as.name(name2)),
+        abs_change = (
+            (!!as.name(name1)) - (!!as.name(name2))
+        ),
     )
 
 p <- ggplot(heatmap.df, aes(y = ancestral, x = derived)) +
     theme_cowplot() +
-    geom_tile(aes(fill = log_fold)) +
-    facet_row(~name, scales = "free") +
     scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
-    scale_fill_distiller(palette = "Spectral")
+    scale_fill_distiller(palette = "Spectral") +
+    theme(legend.position = "bottom")
 
-p2 <- ggplot(heatmap.df, aes(y = ancestral, x = derived)) +
-    theme_cowplot() +
-    geom_tile(aes(fill = log_fold)) +
-    facet_row(~name, scales = "free") +
-    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
-    scale_fill_distiller(palette = "Spectral")
+ggsave(
+    file = out_heatmap,
+    plot = cowplot::plot_grid(p + geom_tile(aes(fill = log_change)), p + geom_tile(aes(fill = abs_change))),
+    height = 12, width = 12
+)
