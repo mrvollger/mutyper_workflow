@@ -33,11 +33,13 @@ out_plot <- "~/Desktop/1_2.pdf"
 out_fold <- "~/Desktop/log_fold.pdf"
 out_targets <- "~/Desktop/targets_fold.pdf"
 out_pca <- "~/Desktop/pca.pdf"
+out_heatmap <- "~/Desktop/pca.pdf"
 
 out_fold <- snakemake@output$fold
 out_plot <- snakemake@output$plot
 out_targets <- snakemake@output$targets
 out_pca <- snakemake@output$pca
+out_heatmap <- snakemake@output$heatmap
 
 
 read_targets <- function(f, tag) {
@@ -247,4 +249,8 @@ autoplot(pca_res, data = spec_df, size = 0.001) +
     # geom_text_repel(aes(label = sample, color = Superpopulation)) +
     theme_cowplot() +
     theme(legend.position = "top")
+dev.off()
+
+pdf(out_heatmap, height = 8, width = 8)
+heatmap(spec1$m / spec2$m)
 dev.off()
