@@ -247,7 +247,7 @@ rule mutyper_spectra_ksfs:
         bcf=rules.mutyper_vcf.output.bcf,
         bed=lambda wc: config["stratify"][wc.rgn],
     output:
-        ksfs="results/spectra/stratify/{rgn}_ksfs.txt",
+        ksfs="results/ksfs/{rgn}/ksfs.txt",
     log:
         "logs/ksfs/{rgn}.log",
     conda:
