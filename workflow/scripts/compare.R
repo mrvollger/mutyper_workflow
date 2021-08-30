@@ -253,7 +253,7 @@ autoplot(pca_res, data = spec_df, size = 0.001) +
 dev.off()
 
 pdf(out_heatmap, height = 8, width = 8)
-heatmap(spec1$m - spec2$m,
+heatmap(spec1$m / sum(spec1$m) - spec2$m / sum(spec2$m),
     col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
 )
 legend(
