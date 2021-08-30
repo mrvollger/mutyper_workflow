@@ -254,7 +254,10 @@ rule mutyper_spectra_ksfs:
         "../envs/env.yml"
     shell:
         """
-        bcftools view --regions-file {input.bed} {input.bcf} \
+        bcftools view \
+            --regions-file {input.bed} \
+            -e 'GT[*]="mis"' \
+                {input.bcf} \
             | mutyper ksfs -  \
         > {output.ksfs}
         """
