@@ -258,6 +258,7 @@ rule mutyper_spectra_ksfs:
             --regions-file {input.bed} \
             -e 'GT[*]="mis"' \
                 {input.bcf} \
+            | bcftools filter --include 'AN=2*N_SAMPLES' \
             | mutyper ksfs -  \
         > {output.ksfs}
         """
