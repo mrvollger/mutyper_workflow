@@ -228,7 +228,8 @@ rule mutyper_spectra_targets:
     shell:
         """
         cat {input.fasta} \
-            | seqtk seq -M {input.bed} -c \
+            | seqtk subseq - {input.bed} \
+            | sed 's/:\|-/_/g' \
             > {output.fasta}
         samtools faidx {output.fasta}
 
@@ -236,6 +237,9 @@ rule mutyper_spectra_targets:
             {output.fasta} \
             > {output.targets}
         """
+
+
+# | seqtk seq -M {input.bed} -c \
 
 
 rule mutyper_spectra_ksfs:
