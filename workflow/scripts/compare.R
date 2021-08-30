@@ -9,6 +9,7 @@ library(data.table)
 library(tidyverse)
 library(ggforce)
 library(glue)
+library(RColorBrewer)
 # library(tidylog)
 
 pop <- fread("https://eichlerlab.gs.washington.edu/help/mvollger/share/mutyper/hprc_year1_sample_metadata.txt", fill = TRUE)
@@ -252,5 +253,11 @@ autoplot(pca_res, data = spec_df, size = 0.001) +
 dev.off()
 
 pdf(out_heatmap, height = 8, width = 8)
-heatmap(spec1$m / spec2$m)
+heatmap(spec1$m / spec2$m,
+    col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
+)
+legend(
+    x = "bottomright", legend = c("min", "ave", "max"),
+    fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
+)
 dev.off()
