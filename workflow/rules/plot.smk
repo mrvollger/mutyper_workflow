@@ -47,6 +47,7 @@ rule plot_comparison:
         targets="results/plots/stratify/compare/{name1}_{name2}/targets.pdf",
         pca="results/plots/stratify/compare/{name1}_{name2}/pca.pdf",
         heatmap="results/plots/stratify/compare/{name1}_{name2}/heatmap_{name1}_vs_{name2}.pdf",
+        heatmap2="results/plots/stratify/compare/{name1}_{name2}/heatmap_{name1}_divide_{name2}.pdf",
     log:
         "logs/plots/compare/{name1}_{name2}.log",
     conda:
@@ -71,6 +72,7 @@ rule plot_comparison_corrected:
         targets="results/plots/stratify/compare_corrected/{name1}_{name2}/targets.pdf",
         pca="results/plots/stratify/compare_corrected/{name1}_{name2}/pca.pdf",
         heatmap="results/plots/stratify/compare_corrected/{name1}_{name2}/heatmap_{name1}_vs_{name2}.pdf",
+        heatmap2="results/plots/stratify/compare_corrected/{name1}_{name2}/heatmap_{name1}_divide_{name2}.pdf",
     log:
         "logs/plots/compare_corrected/{name1}_{name2}.log",
     conda:

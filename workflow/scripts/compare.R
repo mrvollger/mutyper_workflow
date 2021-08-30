@@ -41,6 +41,7 @@ out_plot <- snakemake@output$plot
 out_targets <- snakemake@output$targets
 out_pca <- snakemake@output$pca
 out_heatmap <- snakemake@output$heatmap
+out_heatmap2 <- snakemake@output$heatmap2
 
 
 read_targets <- function(f, tag) {
@@ -254,6 +255,16 @@ dev.off()
 
 pdf(out_heatmap, height = 8, width = 8)
 heatmap(spec1$m / sum(spec1$m) - spec2$m / sum(spec2$m),
+    col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
+)
+legend(
+    x = "topright", legend = c("min", "ave", "max"),
+    fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
+)
+dev.off()
+
+pdf(out_heatmap2, height = 8, width = 8)
+heatmap((spec1$m / sum(spec1$m)) / (spec2$m / sum(spec2$m)),
     col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
 )
 legend(
