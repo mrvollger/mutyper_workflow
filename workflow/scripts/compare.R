@@ -257,7 +257,7 @@ heatmap(spec1$m / sum(spec1$m) - spec2$m / sum(spec2$m),
     col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
 )
 legend(
-    x = "bottomright", legend = c("min", "ave", "max"),
+    x = "topright", legend = c("min", "ave", "max"),
     fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
 )
 dev.off()
