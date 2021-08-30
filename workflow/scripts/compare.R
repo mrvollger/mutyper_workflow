@@ -286,7 +286,6 @@ heatmap.df <- fold_change.df %>%
 
 p <- ggplot(heatmap.df, aes(y = ancestral, x = derived)) +
     theme_cowplot() +
-    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
     scale_fill_distiller(palette = "Spectral") +
     theme(legend.position = "bottom")
 
