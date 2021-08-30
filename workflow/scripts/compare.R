@@ -279,6 +279,7 @@ heatmap.df <- fold_change.df %>%
     separate(spectra, ">", into = c("ancestral", "right")) %>%
     mutate(
         derived = substr(right, 2, 2),
+        first = substr(ancestral, 1, 1),
         abs_change = (
             (!!as.name(name1)) - (!!as.name(name2))
         ),
@@ -286,11 +287,12 @@ heatmap.df <- fold_change.df %>%
 
 p <- ggplot(heatmap.df, aes(y = ancestral, x = derived)) +
     theme_cowplot() +
+    facet_grid(first ~ ., scales = "free", space = "free") +
     scale_fill_distiller(palette = "Spectral") +
     theme(legend.position = "bottom")
-
+fig <- cowplot::plot_grid(p + geom_tile(aes(fill = log_change)), p + geom_tile(aes(fill = abs_change)))
 ggsave(
     file = out_heatmap,
-    plot = cowplot::plot_grid(p + geom_tile(aes(fill = log_change)), p + geom_tile(aes(fill = abs_change))),
-    height = 12, width = 12
+    plot = fig,
+    height = 8, width = 12
 )
