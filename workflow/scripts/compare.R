@@ -34,7 +34,7 @@ out_plot <- "~/Desktop/1_2.pdf"
 out_fold <- "~/Desktop/log_fold.pdf"
 out_targets <- "~/Desktop/targets_fold.pdf"
 out_pca <- "~/Desktop/pca.pdf"
-out_heatmap <- "~/Desktop/pca.pdf"
+out_heatmap <- "~/Desktop/pca_heatmap.pdf"
 
 out_fold <- snakemake@output$fold
 out_plot <- snakemake@output$plot
@@ -67,7 +67,8 @@ make_spectra_long <- function(spectra) {
             values_to = "count"
         ) %>%
         mutate(first_base = substr(spectra, 1, 1)) %>%
-        mutate(midbase = substr(spectra, 2, 2)) %>%
+        mutate(mid_base = substr(spectra, 2, 2)) %>%
+        mutate(last_base = substr(spectra, 3, 3)) %>%
         mutate(first_two_bases = substr(spectra, 1, 2)) %>%
         mutate(first_three_bases = substr(spectra, 1, 3)) %>%
         data.table()
@@ -75,7 +76,12 @@ make_spectra_long <- function(spectra) {
 
 
 read_spectra <- function(f) {
-    spectra <- fread(f, sep = "\t")
+    spectra <- fread(f, sep = "\t") %>%
+        filter(sample != "CHM1_2") %>%
+        filter(sample != "GRCh38_1") %>%
+        filter(sample != "GRCh38_2") %>%
+        data.table()
+
     spectra.m <- make_spectra_matrix(spectra)
     pca_res <- prcomp(spectra.m, center = TRUE, scale. = TRUE)
     spectra$PC1 <- pca_res$x[, 1]
@@ -234,6 +240,7 @@ print(dim(spec1$m))
 print(dim(spec2$m))
 shared <- intersect(colnames(spec1$m), colnames(spec2$m))
 spec_matrix <- rbind(spec1$m[, shared], spec2$m[, shared], fill = TRUE)
+spec_matrix <- spec_matrix[row.names(spec_matrix) != "fill", ]
 pca_res <- prcomp(spec_matrix, center = TRUE, scale. = TRUE)
 
 
