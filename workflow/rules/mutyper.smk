@@ -215,6 +215,21 @@ rule filter_stratify_bed:
         """
 
 
+rule seq_content_stratify:
+    input:
+        bed=rules.filter_stratify_bed.output.bed,
+    output:
+        tbl="results/spectra/stratify/{rgn}_seq_content.tbl",
+    log:
+        "logs/spectra.{rgn}.log",
+    conda:
+        "../envs/env.yml"
+    shell:
+        """
+        bedtools nuc -fi {input.ref} -bed {input.bed} > {output.tbl}
+        """
+
+
 rule mutyper_spectra_stratify:
     input:
         bcf=rules.mutyper_vcf.output.bcf,
