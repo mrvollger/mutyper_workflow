@@ -3,6 +3,7 @@ chain: config/inputs/clint-to-chm13_v1.1.chain
 vcf: /net/eichler/vol26/projects/assembly_breaks/nobackups/asm-to-reference-alignment/results/CHM13_V1.1_v2.24_asm20/merged.vcf.gz
 reference: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/SEDEF/chm13_v1.1_plus38Y_masked.fasta
 outgroup: /net/eichler/vol28/projects/long_read_archive/nobackups/nhp/Clint_PTR/assemblies/hifiasm/0.15.2/Clint_PTR.hifiasm.bp.hap1.p_ctg.fasta
+include: config/include_regions.bed
 stratify:
   SD: config/annotations/SD.bed
   InterSD: config/annotations/SD_inter.bed
