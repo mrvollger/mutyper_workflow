@@ -196,10 +196,30 @@ rule mutyper_spectra:
         """
 
 
+rule filter_stratify_bed:
+    input:
+        filter_bed=config["include"],
+        bed=lambda wc: config["stratify"][wc.rgn],
+    output:
+        bed=temp("temp/spectra/stratify/{rgn}_filtered.bed"),
+    log:
+        "logs/spectra.{rgn}.log",
+    conda:
+        "../envs/env.yml"
+    shell:
+        """
+        bedtools intersect -a {input.bed} -b {input.filter_bed} \
+            | bedtools sort -i - \
+            | bedtools merge -i - \
+        > {output.bed}
+        """
+
+
 rule mutyper_spectra_stratify:
     input:
         bcf=rules.mutyper_vcf.output.bcf,
-        bed=lambda wc: config["stratify"][wc.rgn],
+        #bed=lambda wc: config["stratify"][wc.rgn],
+        bed=rules.filter_stratify_bed.output.bed,
     output:
         spectra="results/spectra/stratify/{rgn}_spectra.txt",
     log:
@@ -217,7 +237,8 @@ rule mutyper_spectra_stratify:
 rule mutyper_spectra_targets:
     input:
         fasta=expand("results/ancestral-fasta/{chrm}.fa", chrm=CHRS),
-        bed=lambda wc: config["stratify"][wc.rgn],
+        #bed=lambda wc: config["stratify"][wc.rgn],
+        bed=rules.filter_stratify_bed.output.bed,
     output:
         targets="results/spectra/stratify/{rgn}_targets.txt",
         fasta=temp("temp/spectra/stratify/fasta/{rgn}_targets.fa"),
@@ -246,7 +267,8 @@ rule mutyper_spectra_targets:
 rule mutyper_spectra_ksfs:
     input:
         bcf=rules.mutyper_vcf.output.bcf,
-        bed=lambda wc: config["stratify"][wc.rgn],
+        #bed=lambda wc: config["stratify"][wc.rgn],
+        bed=rules.filter_stratify_bed.output.bed,
     output:
         ksfs="results/ksfs/{rgn}/ksfs.txt",
     log:
