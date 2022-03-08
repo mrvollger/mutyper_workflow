@@ -67,9 +67,10 @@ rule prep_vcf:
         "../envs/env.yml"
     shell:
         """
-        bcftools view {input.vcf} {wildcards.chrm} \
+        bcftools view -v snps {input.vcf} {wildcards.chrm} \
             | bcftools sort -m 8G - \
             | bcftools +fill-tags \
+            | bcftools filter -i 'AN>0' \
             -Ob -o {output.bcf}
 
         bcftools index -f {output.bcf}

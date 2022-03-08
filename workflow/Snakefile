@@ -49,6 +49,9 @@ if "stratify" in config:
 else:
     RGNS = []
 
+# remove unwanted contigs
+unwanted_contigs = {"chrY", "chrM", "chrMt", "chrMT", "chrEbv", "chrEBV"}
+CHRS = [contig for contig in CHRS if contig not in unwanted_contigs]
 
 #
 #
