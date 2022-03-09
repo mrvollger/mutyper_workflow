@@ -313,5 +313,7 @@ ggsave(
 #
 fwrite(spec,
     file = spectra_table_f,
-    sep = "\t"
+    sep = "\t",
+    row.names = F,
+    quote = F,
 )

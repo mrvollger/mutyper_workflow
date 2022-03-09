@@ -74,6 +74,7 @@ rule plot_comparison_corrected:
         pca="results/plots/stratify/compare_corrected/{name1}_{name2}/pca.pdf",
         heatmap="results/plots/stratify/compare_corrected/{name1}_{name2}/heatmap_{name1}_vs_{name2}.pdf",
         heatmap2="results/plots/stratify/compare_corrected/{name1}_{name2}/heatmap_{name1}_divide_{name2}.pdf",
+        spectra_table="results/tables/stratify/compare_corrected/spectra_{name1}_{name2}.tbl",
     log:
         "logs/plots/compare_corrected/{name1}_{name2}.log",
     conda:
