@@ -35,6 +35,7 @@ out_fold <- "~/Desktop/log_fold.pdf"
 out_targets <- "~/Desktop/targets_fold.pdf"
 out_pca <- "~/Desktop/pca.pdf"
 out_heatmap <- "~/Desktop/pca_heatmap.pdf"
+spectra_table_f <- "~/Desktop/spectra_table.tbl"
 
 out_fold <- snakemake@output$fold
 out_plot <- snakemake@output$plot
@@ -42,6 +43,8 @@ out_targets <- snakemake@output$targets
 out_pca <- snakemake@output$pca
 out_heatmap <- snakemake@output$heatmap
 out_heatmap2 <- snakemake@output$heatmap2
+spectra_table_f <- snakemake@output$spectra_table
+
 
 
 read_targets <- function(f, tag) {
@@ -302,4 +305,13 @@ ggsave(
     file = out_heatmap,
     plot = fig,
     height = 8, width = 12
+)
+
+
+#
+# save long form table
+#
+fwrite(spec,
+    file = spectra_table_f,
+    sep = "\t"
 )
