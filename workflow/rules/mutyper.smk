@@ -217,6 +217,7 @@ rule filter_stratify_bed:
 
 rule seq_content_stratify:
     input:
+        ref=REF,
         bed=rules.filter_stratify_bed.output.bed,
     output:
         tbl="results/spectra/stratify/{rgn}_seq_content.tbl",
