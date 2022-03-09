@@ -234,7 +234,7 @@ rule seq_content_stratify:
 
 rule seq_content:
     input:
-        bed=expand(rules.seq_content_stratify.output.bed, rgn=RGNS),
+        tbl=expand(rules.seq_content_stratify.output.tbl, rgn=RGNS),
     output:
         tbl="results/spectra/stratify/seq_content.tbl",
     log:
@@ -243,7 +243,7 @@ rule seq_content:
         "../envs/env.yml"
     shell:
         """
-        cat {input.bed} > {output.tbl}
+        cat {input.tbl} > {output.tbl}
         """
 
 
