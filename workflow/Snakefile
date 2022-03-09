@@ -80,4 +80,4 @@ rule all:
         make_plot_comparison_outputs,
         expand(rules.mutyper_spectra_correction.output, rgn=RGNS),
         expand(rules.mutyper_spectra_ksfs.output, rgn=RGNS),
-        #expand(rules.seq_content_stratify.output, rgn=RGNS),
+        expand(rules.seq_content_stratify.output, rgn=RGNS),
