@@ -221,12 +221,29 @@ rule seq_content_stratify:
     output:
         tbl="results/spectra/stratify/{rgn}_seq_content.tbl",
     log:
-        "logs/spectra.{rgn}.log",
+        "logs/seq_content_{rgn}.log",
     conda:
         "../envs/env.yml"
     shell:
         """
-        bedtools nuc -fi {input.ref} -bed {input.bed} > {output.tbl}
+        bedtools nuc -fi {input.ref} -bed {input.bed} \
+            | sed 's/$/\\t{wildcards.rgn}/' \
+        > {output.tbl}
+        """
+
+
+rule seq_content:
+    input:
+        bed=expand(rules.seq_content_stratify.output.bed, rgn=RGNS),
+    output:
+        tbl="results/spectra/stratify/seq_content.tbl",
+    log:
+        "logs/seq_content.log",
+    conda:
+        "../envs/env.yml"
+    shell:
+        """
+        cat {input.bed} > {output.tbl}
         """
 
 
