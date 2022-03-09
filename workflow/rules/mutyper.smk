@@ -244,7 +244,8 @@ rule seq_content:
         "../envs/env.yml"
     shell:
         """
-        cat {input.tbl} > {output.tbl}
+        head -n1 {input.tbl[0]} > {output.tbl} 
+        cat {input.tbl} | grep -v "#" >> {output.tbl}
         """
 
 
