@@ -332,9 +332,3 @@ rule mutyper_spectra_correction:
         "../envs/R.yml"
     script:
         "../scripts/correct.R"
-
-
-rule mutyper:
-    input:
-        rules.mutyper_vcf.output,
-        rules.mutyper_spectra.output,
