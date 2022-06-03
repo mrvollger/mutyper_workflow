@@ -268,6 +268,25 @@ rule mutyper_spectra_stratify:
         """
 
 
+rule mutyper_spectra_stratify_population:
+    input:
+        bcf=rules.mutyper_vcf.output.bcf,
+        #bed=lambda wc: config["stratify"][wc.rgn],
+        bed=rules.filter_stratify_bed.output.bed,
+    output:
+        spectra="results/spectra/stratify/{rgn}_spectra_population.txt",
+    log:
+        "logs/spectra.{rgn}.log",
+    conda:
+        "../envs/env.yml"
+    shell:
+        """
+        bcftools view --regions-file {input.bed} {input.bcf} \
+            | mutyper spectra --population - \
+            > {output.spectra}
+        """
+
+
 rule mutyper_spectra_targets:
     input:
         fasta=expand("results/ancestral-fasta/{chrm}.fa", chrm=CHRS),

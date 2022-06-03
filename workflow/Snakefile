@@ -60,6 +60,7 @@ CHRS = [contig for contig in CHRS if contig not in unwanted_contigs]
 wildcard_constraints:
     chrm="|".join(CHRS),
     rng="|".join(RGNS),
+    rgn="|".join(RGNS),
 
 
 #
@@ -76,6 +77,7 @@ rule all:
         rules.plot_spectra.output,
         expand(rules.mutyper_spectra_targets.output, rgn=RGNS),
         expand(rules.mutyper_spectra_stratify.output, rgn=RGNS),
+        expand(rules.mutyper_spectra_stratify_population.output, rgn=RGNS),
         expand(rules.plot_spectra_stratify.output, rgn=RGNS),
         make_plot_comparison_outputs,
         expand(rules.mutyper_spectra_correction.output, rgn=RGNS),
