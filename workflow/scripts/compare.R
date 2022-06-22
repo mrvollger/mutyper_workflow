@@ -30,6 +30,9 @@ name2 <- "Unique"
 name1 <- snakemake@wildcards$name1
 name2 <- snakemake@wildcards$name2
 
+
+IS_POP <- snakemake@params$population 
+
 out_plot <- "~/Desktop/1_2.pdf"
 out_fold <- "~/Desktop/log_fold.pdf"
 out_targets <- "~/Desktop/targets_fold.pdf"
@@ -79,16 +82,33 @@ make_spectra_long <- function(spectra) {
 
 
 read_spectra <- function(f) {
-    spectra <- fread(f, sep = "\t") %>%
+    spectra <- fread(f, sep = "\t")
+
+    if( !("sample" %in% colnames(spectra)) ) {
+      #spectra["sample"] = "population_1"
+      spectra = data.table(sample="population_1", spectra)
+    }
+
+    print(spectra)
+
+    spectra <- spectra %>%
         filter(sample != "CHM1_2") %>%
         filter(sample != "GRCh38_1") %>%
         filter(sample != "GRCh38_2") %>%
         data.table()
 
     spectra.m <- make_spectra_matrix(spectra)
-    pca_res <- prcomp(spectra.m, center = TRUE, scale. = TRUE)
-    spectra$PC1 <- pca_res$x[, 1]
-    spectra$PC2 <- pca_res$x[, 2]
+    print("made matrix")
+    if(IS_POP){
+        pca_res = NULL
+        spectra$PC1 = 0
+        spectra$PC2 = 0
+    } else{
+        pca_res <- prcomp(spectra.m, center = TRUE, scale. = TRUE)
+        print("made pca")
+        spectra$PC1 <- pca_res$x[, 1]
+        spectra$PC2 <- pca_res$x[, 2]
+    }
 
     list(
         df = spectra,
@@ -252,6 +272,11 @@ spec_df <- data.table(spec_matrix) %>%
     separate(sample, sep = "_", into = c("Sample", "stratify"), remove = FALSE) %>%
     merge(pop, by = "Sample", all.x = T) %>%
     data.table()
+
+if(IS_POP){
+  spec_df$Superpopulation = "All"
+}
+
 spec_df$PC1 <- pca_res$x[, 1]
 spec_df$PC2 <- pca_res$x[, 2]
 
@@ -264,24 +289,28 @@ autoplot(pca_res, data = spec_df, size = 0.001) +
 dev.off()
 
 pdf(out_heatmap, height = 8, width = 8)
-heatmap(spec1$m / sum(spec1$m) - spec2$m / sum(spec2$m),
-    col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
-)
-legend(
-    x = "topright", legend = c("min", "ave", "max"),
-    fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
-)
+if(!IS_POP){
+  heatmap(spec1$m / sum(spec1$m) - spec2$m / sum(spec2$m),
+      col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
+  )
+  legend(
+      x = "topright", legend = c("min", "ave", "max"),
+      fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
+  )
+}
 dev.off()
 
 pdf(out_heatmap2, height = 8, width = 8)
-heatmap(
-    (spec1$m / sum(spec1$m)) / (spec2$m / sum(spec2$m)),
-    col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
-)
-legend(
-    x = "topright", legend = c("min", "ave", "max"),
-    fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
-)
+if(!IS_POP){
+  heatmap(
+      (spec1$m / sum(spec1$m)) / (spec2$m / sum(spec2$m)),
+      col = colorRampPalette(rev(brewer.pal(8, "Spectral")))(25)
+  )
+  legend(
+      x = "topright", legend = c("min", "ave", "max"),
+      fill = colorRampPalette(rev(brewer.pal(8, "Spectral")))(3)
+  )
+}
 dev.off()
 
 

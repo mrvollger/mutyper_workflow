@@ -51,6 +51,32 @@ rule plot_comparison:
         spectra_table="results/tables/stratify/spectra_{name1}_{name2}.tbl",
     log:
         "logs/plots/compare/{name1}_{name2}.log",
+    params:
+        population=False
+    conda:
+        "../envs/R.yml"
+    script:
+        "../scripts/compare.R"
+
+
+rule plot_comparison_population:
+    input:
+        lambda wc: (rules.mutyper_spectra_stratify_population.output.spectra).format(rgn=wc.name1),
+        lambda wc: (rules.mutyper_spectra_stratify_population.output.spectra).format(rgn=wc.name2),
+        lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name1),
+        lambda wc: (rules.mutyper_spectra_targets.output.targets).format(rgn=wc.name2),
+    output:
+        plot="results/plots/stratify/compare/{name1}_{name2}/spectra_population.pdf",
+        fold="results/plots/stratify/compare/{name1}_{name2}/log_fold_population.pdf",
+        targets="results/plots/stratify/compare/{name1}_{name2}/targets_population.pdf",
+        pca="results/plots/stratify/compare/{name1}_{name2}/pca_population.pdf",
+        heatmap="results/plots/stratify/compare/{name1}_{name2}/heatmap_{name1}_vs_{name2}_population.pdf",
+        heatmap2="results/plots/stratify/compare/{name1}_{name2}/heatmap_{name1}_divide_{name2}_population.pdf",
+        spectra_table="results/tables/stratify/spectra_{name1}_{name2}_population.tbl",
+    log:
+        "logs/plots/compare/{name1}_{name2}_population.log",
+    params:
+        population=True 
     conda:
         "../envs/R.yml"
     script:
@@ -77,6 +103,8 @@ rule plot_comparison_corrected:
         spectra_table="results/tables/stratify/compare_corrected/spectra_{name1}_{name2}.tbl",
     log:
         "logs/plots/compare_corrected/{name1}_{name2}.log",
+    params:
+        population=False
     conda:
         "../envs/R.yml"
     script:
@@ -86,6 +114,7 @@ rule plot_comparison_corrected:
 def make_plot_comparison_outputs(wc):
     for name1, name2 in combinations(RGNS, 2):
         rtn = expand(rules.plot_comparison.output, name1=name1, name2=name2)
+        rtn += expand(rules.plot_comparison_population.output, name1=name1, name2=name2)
         rtn += expand(rules.plot_comparison_corrected.output, name1=name1, name2=name2)
         for f in rtn:
             yield f
