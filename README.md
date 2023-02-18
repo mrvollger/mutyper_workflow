@@ -1,4 +1,5 @@
 # mutyper workflow
+[![DOI](https://zenodo.org/badge/400329320.svg)](https://zenodo.org/badge/latestdoi/400329320)
 
 A snakemake workflow for the mutyper python package.
 
